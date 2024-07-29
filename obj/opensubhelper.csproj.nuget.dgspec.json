@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Abraham\\Desktop\\opensubhelper\\opensubhelper.csproj": {}
+    "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Abraham\\Desktop\\opensubhelper\\opensubhelper.csproj": {
+    "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Abraham\\Desktop\\opensubhelper\\opensubhelper.csproj",
+        "projectUniqueName": "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
         "projectName": "opensubhelper",
-        "projectPath": "c:\\Users\\Abraham\\Desktop\\opensubhelper\\opensubhelper.csproj",
+        "projectPath": "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
         "packagesPath": "C:\\Users\\Abraham\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Abraham\\Desktop\\opensubhelper\\obj\\",
+        "outputPath": "c:\\Users\\Abraham\\Desktop\\helper\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Abraham\\AppData\\Roaming\\NuGet\\NuGet.Config",

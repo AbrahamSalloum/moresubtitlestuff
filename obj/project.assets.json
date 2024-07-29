@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Abraham\\Desktop\\opensubhelper\\opensubhelper.csproj",
+      "projectUniqueName": "C:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
       "projectName": "opensubhelper",
-      "projectPath": "C:\\Users\\Abraham\\Desktop\\opensubhelper\\opensubhelper.csproj",
+      "projectPath": "C:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
       "packagesPath": "C:\\Users\\Abraham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Abraham\\Desktop\\opensubhelper\\obj\\",
+      "outputPath": "C:\\Users\\Abraham\\Desktop\\helper\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Abraham\\AppData\\Roaming\\NuGet\\NuGet.Config",

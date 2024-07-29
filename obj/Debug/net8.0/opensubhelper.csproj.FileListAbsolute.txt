@@ -12,3 +12,17 @@ c:\Users\Abraham\Desktop\opensubhelper\obj\Debug\net8.0\refint\opensubhelper.dll
 c:\Users\Abraham\Desktop\opensubhelper\obj\Debug\net8.0\opensubhelper.pdb
 c:\Users\Abraham\Desktop\opensubhelper\obj\Debug\net8.0\opensubhelper.genruntimeconfig.cache
 c:\Users\Abraham\Desktop\opensubhelper\obj\Debug\net8.0\ref\opensubhelper.dll
+c:\Users\Abraham\Desktop\helper\bin\Debug\net8.0\opensubhelper.exe
+c:\Users\Abraham\Desktop\helper\bin\Debug\net8.0\opensubhelper.deps.json
+c:\Users\Abraham\Desktop\helper\bin\Debug\net8.0\opensubhelper.runtimeconfig.json
+c:\Users\Abraham\Desktop\helper\bin\Debug\net8.0\opensubhelper.dll
+c:\Users\Abraham\Desktop\helper\bin\Debug\net8.0\opensubhelper.pdb
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\opensubhelper.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\opensubhelper.AssemblyInfoInputs.cache
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\opensubhelper.AssemblyInfo.cs
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\opensubhelper.csproj.CoreCompileInputs.cache
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\opensubhelper.dll
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\refint\opensubhelper.dll
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\opensubhelper.pdb
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\opensubhelper.genruntimeconfig.cache
+c:\Users\Abraham\Desktop\helper\obj\Debug\net8.0\ref\opensubhelper.dll
