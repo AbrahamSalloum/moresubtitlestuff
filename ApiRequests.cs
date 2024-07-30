@@ -7,7 +7,6 @@ class ApiRequests
     private string apikey;
     private string username;
     private string password;
-
     private string token;
     private HttpClient client;
     public ApiRequests(string Apikey, string Username, string Password) {
@@ -16,10 +15,8 @@ class ApiRequests
         password = Password;
         client = ClientSetup();
     }
-
     public static string BaseAPIUrl = "https://api.opensubtitles.com/api/v1";
     
-
     private  HttpClient ClientSetup()
     {
         HttpClient client = new HttpClient();
@@ -30,13 +27,13 @@ class ApiRequests
         return client;
     }
 
-    public async Task<LoginInfo> Login(string user = "string", string pw = "string")
+    public async Task<LoginInfo> Login()
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/login");
         var jsonObj = new
         {
-            username = user,
-            password = pw
+            username,
+            password
         };
         requestMessage.Content = new StringContent(JsonSerializer.Serialize(jsonObj), Encoding.UTF8, "application/json");
         requestMessage.Headers.Add("Prefer", "code=200");
@@ -87,14 +84,8 @@ class ApiRequests
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/download");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
-        var jsonObj = new FileIDRequest
-        {
-            file_id = subid
-        };
-
         string s = $"{{\n  \"file_id\": {subid}\n}}";
         requestMessage.Content = new StringContent(s, Encoding.ASCII, "application/json");
-        
         
         var response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
@@ -106,7 +97,7 @@ class ApiRequests
     {
         Stream fileStream = await client.GetStreamAsync(info.link);
 
-        FileStream outputFileStream = new FileStream($".\\${info.file_name}.sub", FileMode.CreateNew);
+        FileStream outputFileStream = new FileStream($".\\{info.file_name}.sub", FileMode.CreateNew);
         await fileStream.CopyToAsync(outputFileStream);
         // return fileStream;
     }
