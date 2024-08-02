@@ -7,7 +7,7 @@ class ApiRequests
     private string apikey;
     private string username;
     private string password;
-    private string token;
+    private string? token;
     private HttpClient client;
     public ApiRequests(string Apikey, string Username, string Password) {
         apikey = Apikey;
@@ -27,7 +27,7 @@ class ApiRequests
         return client;
     }
 
-    public async Task<LoginInfo> Login()
+    public async Task<LoginInfo?> Login()
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/login");
         var jsonObj = new
@@ -39,18 +39,18 @@ class ApiRequests
         requestMessage.Headers.Add("Prefer", "code=200");
         var response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
-        LoginInfo logininfo = JsonSerializer.Deserialize<LoginInfo>(responseAsString);
-        token = logininfo.token;
+        LoginInfo? logininfo = JsonSerializer.Deserialize<LoginInfo>(responseAsString);
+        token = logininfo?.token;
         return logininfo;
     }
-    public async Task<LogoutInfo> Logout(string token = "string")
+    public async Task<LogoutInfo?> Logout(string token = "string")
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/logout");
         requestMessage.Headers.Add("Prefer", "code=200, example=default");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
         var response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
-        LogoutInfo logoutinfo = JsonSerializer.Deserialize<LogoutInfo>(responseAsString);
+        LogoutInfo? logoutinfo = JsonSerializer.Deserialize<LogoutInfo>(responseAsString);
         return logoutinfo;
     }
     public async Task GetRecentList()
@@ -63,9 +63,8 @@ class ApiRequests
         string responseAsString = await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<SubtitleResults> SearchSubtitle(string searchterm)
+    public async Task<SubtitleResults?> SearchSubtitle(string searchterm)
     {
-        Console.WriteLine(token);
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?query={searchterm}");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
         var response = await client.SendAsync(requestMessage);
@@ -80,7 +79,7 @@ class ApiRequests
         public int file_id {set; get;}
     }
 
-    public async Task<DownLoadLinkData> RequestDownloadURL(int subid)
+    public async Task<DownLoadLinkData?> RequestDownloadURL(int subid)
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/download");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
@@ -89,7 +88,7 @@ class ApiRequests
         
         var response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
-        var x = JsonSerializer.Deserialize<DownLoadLinkData>(responseAsString);
+        DownLoadLinkData? x = JsonSerializer.Deserialize<DownLoadLinkData>(responseAsString);
         return x;
     }
 
