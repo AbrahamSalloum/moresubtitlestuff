@@ -9,15 +9,16 @@ class ApiRequests
     private string password;
     private string? token;
     private HttpClient client;
-    public ApiRequests(string Apikey, string Username, string Password) {
+    public ApiRequests(string Apikey, string Username, string Password)
+    {
         apikey = Apikey;
         username = Username;
         password = Password;
         client = ClientSetup();
     }
     public static string BaseAPIUrl = "https://api.opensubtitles.com/api/v1";
-    
-    private  HttpClient ClientSetup()
+
+    private HttpClient ClientSetup()
     {
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Add("Api-Key", $"{apikey}");
@@ -65,18 +66,44 @@ class ApiRequests
 
     public async Task<SubtitleResults?> SearchSubtitle(string searchterm)
     {
-        HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?query={searchterm}");
+        HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?query={searchterm}&languages=en");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
         var response = await client.SendAsync(requestMessage);
-        
+
         string responseAsString = await response.Content.ReadAsStringAsync();
         var x = JsonSerializer.Deserialize<SubtitleResults>(responseAsString);
-        return x; 
+        return x;
     }
 
-    class FileIDRequest 
+
+    public async Task<SubtitleResults?> SearchMovieHash(string moviehash)
     {
-        public int file_id {set; get;}
+        HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?moviehash={moviehash}&languages=en");
+        requestMessage.Headers.Add("Authorization", $"Bearer {token}");
+        var response = await client.SendAsync(requestMessage);
+
+        string responseAsString = await response.Content.ReadAsStringAsync();
+        var x = JsonSerializer.Deserialize<SubtitleResults>(responseAsString);
+        return x;
+    }
+
+        public async Task<SubtitleResults?> CustomSubtitleSearch(string queryParams = $"{{\"query\": \"A bugs life 1998\"}}")
+            {
+                QueryParams? searchterms = JsonSerializer.Deserialize<QueryParams>(queryParams);
+                Console.WriteLine(searchterms);
+
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?languages=en&{searchterms}");
+                requestMessage.Headers.Add("Authorization", $"Bearer {token}");
+                var response = await client.SendAsync(requestMessage);
+
+                string responseAsString = await response.Content.ReadAsStringAsync();
+                var x = JsonSerializer.Deserialize<SubtitleResults>(responseAsString);
+                return x;
+            }
+
+    class FileIDRequest
+    {
+        public int file_id { set; get; }
     }
 
     public async Task<DownLoadLinkData?> RequestDownloadURL(int subid)
@@ -85,7 +112,7 @@ class ApiRequests
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
         string s = $"{{\n  \"file_id\": {subid}\n}}";
         requestMessage.Content = new StringContent(s, Encoding.ASCII, "application/json");
-        
+
         var response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
         DownLoadLinkData? x = JsonSerializer.Deserialize<DownLoadLinkData>(responseAsString);
@@ -93,7 +120,7 @@ class ApiRequests
     }
 
     public async Task DownloadSubFile(DownLoadLinkData info)
-    {
+    {  
         Stream fileStream = await client.GetStreamAsync(info.link);
 
         FileStream outputFileStream = new FileStream($".\\{info.file_name}.sub", FileMode.CreateNew);

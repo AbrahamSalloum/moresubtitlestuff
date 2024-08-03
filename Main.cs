@@ -1,13 +1,19 @@
+using System.Text.Json;
+class MainEntry 
 
-class MainEntry {
+{
     public static async Task Main()
     {
 
-            ApiRequests subfetch = new ApiRequests("testfakekey", "abraham", "supermanFAKEpw");
+            Credentials? credentials = Credentails.ReadCredentials(); 
+            if(credentials is null) {
+                return;
+            }
+            ApiRequests subfetch = new ApiRequests(credentials.key, credentials.username, credentials.password);
             await subfetch.Login(); 
 
             SelectOptions begin = new SelectOptions(subfetch); 
-            await begin.TextSearch(); 
+            await begin.ShowSelection(); 
     }
-
 }
+ 
