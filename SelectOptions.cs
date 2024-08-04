@@ -1,4 +1,3 @@
-
 class SelectOptions
 {
 
@@ -22,24 +21,32 @@ class SelectOptions
         return Int32.Parse(input); 
     }
 
-    public async Task ParseSelection() {
-
+    public async Task<SubtitleResults?> ParseSelection() {
+        SubtitleResults? subtitleResults;
         switch(TakeSelection())
         {
             case 1:
-                SubtitleResults? subtitleResults = await TextSearch();
-                Console.WriteLine($"Subtitle ID is: {subtitleResults?.data?[0]?.attributes?.files?[0].file_id}");
+                subtitleResults = await TextSearch();
+                
                 break;
             case 2: 
-                SubtitleResults? subtitleResultsx = await MovieHashSearch();
+                subtitleResults = await MovieHashSearch();
                 break;
             case 3:
-                SubtitleResults? customSearch = await MovieHashSearch();
+                subtitleResults = await CustomSearch();
                 break; 
             default: 
                 Console.WriteLine("1 2 or 3. No other Choice.");
+                subtitleResults = null;
                 break;     
         }
+        if(subtitleResults is null) {
+            Console.WriteLine("search results are null. Something might have gone wrong.");
+            return subtitleResults; 
+        }
+
+        PrintSample(subtitleResults);
+        return subtitleResults; 
     }
 
     public async Task<SubtitleResults?> TextSearch() 
@@ -50,8 +57,11 @@ class SelectOptions
         if(SearchString is null) {
             return null; 
         }
-        
-        SubtitleResults subtitleResults  = await subfetch.SearchSubtitle(SearchString);
+        object TextSearchObject = new 
+        {
+            query = SearchString
+        };
+        SubtitleResults? subtitleResults  = await subfetch.SubtitleSearch(TextSearchObject);
         return subtitleResults; 
     }
 
@@ -70,10 +80,31 @@ class SelectOptions
         }
         string stringhash = Utils.ToHexadecimal(moviehash);
          
-        var subtitleResults  = await subfetch.SearchMovieHash(stringhash);
-        Console.WriteLine("===Results==="); 
-        Console.WriteLine($"Subtitle ID is: {subtitleResults?.data?[0]?.attributes?.files?[0].file_id}");
-        Console.WriteLine($"Subtitle ID is: {subtitleResults?.data?[0]?.attributes?.files?[0].file_name}");
+        object movieHashObject = new 
+        {
+            moviehash = stringhash
+        };
+        SubtitleResults? subtitleResults  = await subfetch.SubtitleSearch(movieHashObject);
+
         return subtitleResults; 
     }    
+
+    public async Task<SubtitleResults?> CustomSearch() 
+    {
+        Console.WriteLine("Enter JSON search terms:");
+        string? j = Console.ReadLine();
+        if(j is null) 
+        {
+            return null; 
+        }
+        SubtitleResults? subtitleResults  = await subfetch.SubtitleSearch(j);
+        return subtitleResults;
+    }
+
+    public static void PrintSample(SubtitleResults subtitleResults)
+    {
+        Console.WriteLine("===Sample Results==="); 
+        Console.WriteLine($"Subtitle ID is: {subtitleResults?.data?[0]?.attributes?.files?[0]?.file_id}");
+        Console.WriteLine($"Subtitle ID is: {subtitleResults?.data?[0]?.attributes?.files?[0]?.file_name}");
+    }
 }

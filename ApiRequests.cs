@@ -1,7 +1,7 @@
 ﻿
 using System.Text;
-using System.Text.Json;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 class ApiRequests
 {
     private string apikey;
@@ -31,101 +31,107 @@ class ApiRequests
     public async Task<LoginInfo?> Login()
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/login");
-        var jsonObj = new
+        object jsonObj = new
         {
             username,
             password
         };
-        requestMessage.Content = new StringContent(JsonSerializer.Serialize(jsonObj), Encoding.UTF8, "application/json");
-        requestMessage.Headers.Add("Prefer", "code=200");
-        var response = await client.SendAsync(requestMessage);
+        requestMessage.Content = new StringContent(JsonConvert.SerializeObject(jsonObj));
+        HttpResponseMessage response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
-        LoginInfo? logininfo = JsonSerializer.Deserialize<LoginInfo>(responseAsString);
+        LoginInfo? logininfo = JsonConvert.DeserializeObject<LoginInfo>(responseAsString);
         token = logininfo?.token;
         return logininfo;
     }
     public async Task<LogoutInfo?> Logout(string token = "string")
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/logout");
-        requestMessage.Headers.Add("Prefer", "code=200, example=default");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
-        var response = await client.SendAsync(requestMessage);
+        HttpResponseMessage response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
-        LogoutInfo? logoutinfo = JsonSerializer.Deserialize<LogoutInfo>(responseAsString);
+        LogoutInfo? logoutinfo = JsonConvert.DeserializeObject<LogoutInfo>(responseAsString);
         return logoutinfo;
     }
     public async Task GetRecentList()
     {
 
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/discover/latest");
-        requestMessage.Headers.Add("Prefer", "code=200, example=default");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
-        var response = await client.SendAsync(requestMessage);
+        HttpResponseMessage response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
     }
 
-    public async Task<SubtitleResults?> SearchSubtitle(string searchterm)
+    public async Task<SubtitleResults?> SubtitleSearch(string jsonString)
     {
-        HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?query={searchterm}&languages=en");
+
+        QueryParams? q = JsonConvert.DeserializeObject<QueryParams>(jsonString);
+        if (q is null)
+        {
+            return null;
+        }
+        JObject searchterms = JObject.FromObject(q);
+        string urlquery = "";
+        foreach (var p in searchterms)
+        {
+            if (p.Value?.Type != JTokenType.Null)
+                urlquery += $"{p.Key}={p.Value}&";
+        }
+                if(urlquery is null) {
+                    return null; 
+                }
+                SubtitleResults? x = await runSearch(urlquery);
+                
+                return x; 
+    }
+
+    public async Task<SubtitleResults?>  SubtitleSearch(object q)
+    {
+
+        JObject searchterms = JObject.FromObject(q);
+        string urlquery = "";
+        foreach (var p in searchterms)
+        {
+            if (p.Value?.Type != JTokenType.Null)
+                urlquery += $"{p.Key}={p.Value}&";
+        }
+                SubtitleResults? x = await runSearch(urlquery);
+                
+                return x; 
+
+    }
+
+    public async Task<SubtitleResults?> runSearch(string urlquery)
+    {
+        HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?languages=en&{urlquery}");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
-        var response = await client.SendAsync(requestMessage);
+        HttpResponseMessage response = await client.SendAsync(requestMessage);
 
         string responseAsString = await response.Content.ReadAsStringAsync();
-        var x = JsonSerializer.Deserialize<SubtitleResults>(responseAsString);
+        SubtitleResults? x = JsonConvert.DeserializeObject<SubtitleResults>(responseAsString);
         return x;
     }
 
 
-    public async Task<SubtitleResults?> SearchMovieHash(string moviehash)
-    {
-        HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?moviehash={moviehash}&languages=en");
-        requestMessage.Headers.Add("Authorization", $"Bearer {token}");
-        var response = await client.SendAsync(requestMessage);
-
-        string responseAsString = await response.Content.ReadAsStringAsync();
-        var x = JsonSerializer.Deserialize<SubtitleResults>(responseAsString);
-        return x;
-    }
-
-        public async Task<SubtitleResults?> CustomSubtitleSearch(string queryParams = $"{{\"query\": \"A bugs life 1998\"}}")
-            {
-                QueryParams? searchterms = JsonSerializer.Deserialize<QueryParams>(queryParams);
-                Console.WriteLine(searchterms);
-
-                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{BaseAPIUrl}/subtitles?languages=en&{searchterms}");
-                requestMessage.Headers.Add("Authorization", $"Bearer {token}");
-                var response = await client.SendAsync(requestMessage);
-
-                string responseAsString = await response.Content.ReadAsStringAsync();
-                var x = JsonSerializer.Deserialize<SubtitleResults>(responseAsString);
-                return x;
-            }
-
-    class FileIDRequest
-    {
-        public int file_id { set; get; }
-    }
 
     public async Task<DownLoadLinkData?> RequestDownloadURL(int subid)
     {
         HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{BaseAPIUrl}/download");
         requestMessage.Headers.Add("Authorization", $"Bearer {token}");
-        string s = $"{{\n  \"file_id\": {subid}\n}}";
+        string s = $"{{\n  \"file_id\": {subid}\n}}"; // the wrong spaces and newlines here will cause errrors. 
         requestMessage.Content = new StringContent(s, Encoding.ASCII, "application/json");
 
-        var response = await client.SendAsync(requestMessage);
+        HttpResponseMessage response = await client.SendAsync(requestMessage);
         string responseAsString = await response.Content.ReadAsStringAsync();
-        DownLoadLinkData? x = JsonSerializer.Deserialize<DownLoadLinkData>(responseAsString);
+        DownLoadLinkData? x = JsonConvert.DeserializeObject<DownLoadLinkData>(responseAsString);
         return x;
     }
 
     public async Task DownloadSubFile(DownLoadLinkData info)
-    {  
+    {
         Stream fileStream = await client.GetStreamAsync(info.link);
 
         FileStream outputFileStream = new FileStream($".\\{info.file_name}.sub", FileMode.CreateNew);
         await fileStream.CopyToAsync(outputFileStream);
-        // return fileStream;
     }
 
 }

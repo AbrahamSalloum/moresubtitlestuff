@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj": {}
+    "C:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj": {
+    "C:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
+        "projectUniqueName": "C:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
         "projectName": "opensubhelper",
-        "projectPath": "c:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
+        "projectPath": "C:\\Users\\Abraham\\Desktop\\helper\\opensubhelper.csproj",
         "packagesPath": "C:\\Users\\Abraham\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Abraham\\Desktop\\helper\\obj\\",
+        "outputPath": "C:\\Users\\Abraham\\Desktop\\helper\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Abraham\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -45,6 +45,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
