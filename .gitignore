@@ -6,10 +6,7 @@
 *.user
 *.sln.docstates
 ##me
-**/credentials.json
-credentials.json
-*.bak
-*//.bak
+
 
 
 # Build results
